@@ -8,6 +8,7 @@ import {
 import LoginPage from "./Pages/login.jsx";
 import RegisterPage from "./Pages/register.jsx";
 import ErrorPage from "./Pages/404.jsx";
+import ProductsPage from "./Pages/products.jsx";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
     path: "/login",
     element: <LoginPage />,
   },
+  {
+    path: "/products",
+    element: <ProductsPage />,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
