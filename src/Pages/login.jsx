@@ -5,7 +5,6 @@ const LoginPage = () => {
   return (
     <AuthLayout title="Login" type="login">
       <FormLogin />
-      
     </AuthLayout>
   );
 };
