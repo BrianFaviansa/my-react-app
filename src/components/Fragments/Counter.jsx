@@ -6,6 +6,22 @@ class Counter extends React.Component {
     this.state = {
       count: 0,
     };
+    console.log("Constructor");
+  }
+
+  componentDidMount() {
+    this.setState({ count: 0 });
+    console.log("Component Did Mount");
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.count !== prevState.count) {
+      console.log("Count state has been updated");
+    }
+    if (this.state.count == 10) {
+      this.setState({ count: 0 });
+      console.log("Count has been reset");
+    }
   }
 
   render() {
