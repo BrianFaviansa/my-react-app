@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import CardProduct from "../components/Fragments/CardProduct";
 import Button from "../components/Elements/Button";
 import Counter from "../components/Fragments/Counter";
@@ -8,7 +8,7 @@ const products = [
     id: 1,
     name: "Sepatu Baru",
     image: "/images/shoes-1.jpg",
-    price: 2500000,
+    price: 250000,
     description: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias illum
     distinctio natus sunt, consequuntur nemo, illo eaque beatae cumque
     odio voluptas, porro voluptatibus aut perferendis libero cum minima
@@ -18,7 +18,7 @@ const products = [
     id: 2,
     name: "Kucing Baru",
     image: "/images/cat-1.jpg",
-    price: 3500000,
+    price: 500000,
     description: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias illum
     distinctio natus sunt, consequuntur nemo, illo eaque beatae cumque
     odio voluptas, porro voluptatibus aut perferendis libero cum minima
@@ -39,13 +39,22 @@ const products = [
 const email = localStorage.getItem("email");
 
 const ProductsPage = () => {
-  // * untuk membuat state pada stateless component / functional component gunakan hooks tepatnya useState
-  const [cart, setCart] = useState([
-    {
-      id: 1,
-      qty: 1,
-    },
-  ]);
+  const [cart, setCart] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  useEffect(() => {
+    setCart(JSON.parse(localStorage.getItem("cart")) || []);
+  }, []);
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      const sum = cart.reduce((acc, item) => {
+        const product = products.find((product) => product.id === item.id);
+        return acc + product.price * item.qty;
+      }, 0);
+      setTotalPrice(sum);
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  }, [cart]);
 
   const handleLogout = () => {
     localStorage.removeItem("email");
@@ -124,13 +133,22 @@ const ProductsPage = () => {
                   </tr>
                 );
               })}
+              <tr className="font-bold">
+                <td colSpan={3}>Total Price</td>
+                <td>
+                  {totalPrice.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  })}
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <div className="my-5 flex justify-center">
+      {/* <div className="my-5 flex justify-center">
         <Counter></Counter>
-      </div>
+      </div> */}
     </Fragment>
   );
 };
