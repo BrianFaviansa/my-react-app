@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import CardProduct from "../components/Fragments/CardProduct";
 import Button from "../components/Elements/Button";
 import Counter from "../components/Fragments/Counter";
@@ -74,6 +74,28 @@ const ProductsPage = () => {
     }
   };
 
+  // * useRef
+  const cartRef = useRef(JSON.parse(localStorage.getItem("cart")) || []);
+
+  const handleAddToCartRef = (id) => {
+    cartRef.current = [...cartRef.current, { id, qty: 1 }];
+    localStorage.setItem("cart", JSON.stringify(cartRef.current));
+  };
+
+  // ! perbedaan useState dan useRef
+  // * useState akan merender ulang komponen ketika nilai berubah, sedangkan useRef tidak akan merender ulang komponen ketika nilai berubah
+
+  // * useRef bisa memanipulasi DOM langsung, sedangkan useState tidak bisa
+  const totalPriceRef = useRef(null);
+
+  useEffect(() => {
+    if(cart.length > 0) {
+      totalPriceRef.current.style.display = "table-row";
+    } else {
+      totalPriceRef.current.style.display = "none";
+    }
+  }, [cart]);
+
   return (
     <Fragment>
       <div className="flex justify-end h-20 bg-blue-600 text-white items-center px-10">
@@ -110,6 +132,7 @@ const ProductsPage = () => {
               </tr>
             </thead>
             <tbody>
+              {/* ! menggunakan useState */}
               {cart.map((item) => {
                 const product = products.find(
                   (product) => product.id === item.id
@@ -133,7 +156,32 @@ const ProductsPage = () => {
                   </tr>
                 );
               })}
-              <tr className="font-bold">
+
+              {/* ! menggunakan useRef */}
+              {/* {cartRef.current.map((item) => {
+                const product = products.find(
+                  (product) => product.id === item.id
+                );
+                return (
+                  <tr key={item.id}>
+                    <td>{product.name}</td>
+                    <td>
+                      {product.price.toLocaleString("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      })}
+                    </td>
+                    <td>{item.qty}</td>
+                    <td>
+                      {(product.price * item.qty).toLocaleString("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      })}
+                    </td>
+                  </tr>
+                );
+              })} */}
+              <tr className="font-bold" ref={totalPriceRef}>
                 <td colSpan={3}>Total Price</td>
                 <td>
                   {totalPrice.toLocaleString("id-ID", {
